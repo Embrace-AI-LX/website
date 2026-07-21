@@ -1,0 +1,81 @@
+# Deploy to AWS S3 + CloudFront.
+#
+# To activate: rename this file to `deploy-s3.yml` (drop `.disabled`).
+#
+# Repository secrets required:
+#   AWS_ROLE_ARN              IAM role trusted by GitHub OIDC (preferred), OR
+#   AWS_ACCESS_KEY_ID         + AWS_SECRET_ACCESS_KEY if you'd rather use keys
+#   AWS_REGION                e.g. eu-west-1
+#   S3_BUCKET                 e.g. embrace-ai-org
+#   CLOUDFRONT_DISTRIBUTION   e.g. E1234567890ABC
+#
+# The daily cron is what makes new Meetup events appear without a commit:
+# the build re-fetches the iCal feed each run.
+
+name: Deploy to S3
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * *' # 06:00 UTC daily, picks up new Meetup events
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-s3
+  cancel-in-progress: true
+
+permissions:
+  contents: write # so the auto-archived past-events.json can be committed back
+  id-token: write # GitHub OIDC -> AWS
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      # An event that just moved into the past is archived by the build; persist it.
+      - name: Commit archived events
+        run: |
+          if ! git diff --quiet src/data/past-events.json; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/data/past-events.json
+            git commit -m "chore: archive past meetup events [skip ci]"
+            git push
+          fi
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Hashed asset filenames get a long cache; HTML must stay fresh.
+      - name: Sync assets
+        run: |
+          aws s3 sync dist/ "s3://${{ secrets.S3_BUCKET }}" \
+            --delete \
+            --exclude "*.html" --exclude "*.xml" --exclude "*.txt" \
+            --cache-control "public,max-age=31536000,immutable"
+
+      - name: Sync HTML
+        run: |
+          aws s3 sync dist/ "s3://${{ secrets.S3_BUCKET }}" \
+            --delete \
+            --exclude "*" --include "*.html" --include "*.xml" --include "*.txt" \
+            --cache-control "public,max-age=0,must-revalidate"
+
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION }}" \
+            --paths "/*"

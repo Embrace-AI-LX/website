@@ -1,0 +1,31 @@
+---
+import { AUDIENCE } from '../data/site';
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+---
+
+<section id="who" class="scroll-mt-24 border-y border-rule bg-ink-raised/60 py-20 md:py-28">
+  <div class="shell">
+    <SectionHead
+      index="02"
+      label="Who's in the room"
+      title="The full expert spectrum, not just engineers."
+      lede="AI doesn't ship from one discipline. Our room mixes the people who build it, the people who fund it, the people who regulate it and the people who make it usable."
+    />
+
+    <div class="mt-14 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        AUDIENCE.map((group, i) => (
+          <div class="reveal">
+            <div class="flex items-center gap-3 border-b border-rule pb-4">
+              <span class="font-mono text-[0.75rem] text-faint">{String(i + 1).padStart(2, '0')}</span>
+              <Icon name={group.icon as any} class="h-5 w-5 text-violet" />
+            </div>
+            <h3 class="mt-5 font-display text-lg">{group.title}</h3>
+            <p class="mt-2.5 text-[0.9375rem] leading-relaxed text-muted">{group.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

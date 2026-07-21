@@ -1,0 +1,37 @@
+---
+import { LINKS } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<section class="shell pb-20 md:pb-28">
+  <div class="reveal panel relative overflow-hidden px-7 py-16 text-center md:px-12 md:py-24">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(30rem_18rem_at_50%_0%,color-mix(in_oklab,var(--color-violet)_26%,transparent),transparent_72%)]"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative">
+      <p class="label"><span class="text-blue">//</span> free · in person · every month</p>
+      <h2 class="mx-auto mt-6 max-w-[16ch] text-[clamp(2.1rem,5.4vw,3.75rem)] leading-[1.02]">
+        Come for the talks.<br />
+        <span class="gradient-text">Stay for the room.</span>
+      </h2>
+      <p class="mx-auto mt-6 max-w-xl leading-relaxed text-muted">
+        Over a thousand practitioners in Lisbon already have. Joining takes one click and costs
+        nothing. We're a non-profit and we intend to stay one.
+      </p>
+
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        <a href={LINKS.meetup} target="_blank" rel="noopener" class="btn btn-primary">
+          Join on Meetup
+          <Icon name="arrowUpRight" class="h-4 w-4" />
+        </a>
+        <a href={LINKS.linkedin} target="_blank" rel="noopener" class="btn btn-ghost">
+          <Icon name="linkedin" class="h-4 w-4" />
+          Follow on LinkedIn
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

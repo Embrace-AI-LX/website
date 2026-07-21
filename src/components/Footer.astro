@@ -1,0 +1,106 @@
+---
+import { Image } from 'astro:assets';
+import mark from '../assets/embrace-ai-mark.png';
+import { LINKS, SITE, TODO_EMAIL, NAV } from '../data/site';
+import Icon from './Icon.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-rule py-14">
+  <div class="shell">
+    <div class="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div>
+        <a href="#top" class="flex items-center gap-2.5" aria-label="Embrace:AI, back to top">
+          <Image src={mark} alt="" width={64} height={53} class="h-7 w-auto object-contain" loading="lazy" />
+          <span class="font-display text-base font-semibold tracking-tight">
+            Embrace<span class="gradient-text">:AI</span>
+          </span>
+        </a>
+        <p class="mt-5 max-w-sm text-[0.9375rem] leading-relaxed text-muted">
+          A non-profit AI community based in {SITE.city}. Free monthly meetups, expert-led and
+          community-run.
+        </p>
+      </div>
+
+      <nav aria-label="Footer">
+        <p class="label">Sections</p>
+        <ul class="mt-4 space-y-2.5">
+          {
+            NAV.map((item) => (
+              <li>
+                <a href={item.href} class="text-[0.9375rem] text-muted transition-colors hover:text-bone">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div>
+        <p class="label">Elsewhere</p>
+        <ul class="mt-4 space-y-2.5">
+          <li>
+            <a
+              href={LINKS.meetup}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-2 text-[0.9375rem] text-muted transition-colors hover:text-bone"
+            >
+              <Icon name="users" class="h-4 w-4" />
+              Meetup
+            </a>
+          </li>
+          <li>
+            <a
+              href={LINKS.linkedin}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-2 text-[0.9375rem] text-muted transition-colors hover:text-bone"
+            >
+              <Icon name="linkedin" class="h-4 w-4" />
+              LinkedIn
+            </a>
+          </li>
+          <li>
+            <a
+              href="#newsletter"
+              class="inline-flex items-center gap-2 text-[0.9375rem] text-muted transition-colors hover:text-bone"
+            >
+              <Icon name="mail" class="h-4 w-4" />
+              Newsletter
+            </a>
+          </li>
+          <li>
+            <a
+              href={LINKS.youtube}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-2 text-[0.9375rem] text-muted transition-colors hover:text-bone"
+            >
+              <Icon name="youtube" class="h-4 w-4" />
+              YouTube
+            </a>
+          </li>
+          <li>
+            <a
+              href={LINKS.email}
+              class="inline-flex items-center gap-2 text-[0.9375rem] text-muted transition-colors hover:text-bone"
+            >
+              <Icon name="mail" class="h-4 w-4" />
+              {TODO_EMAIL}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col gap-3 border-t border-rule pt-6 font-mono text-[0.75rem] text-faint md:flex-row md:items-center md:justify-between"
+    >
+      <p>© {year} Embrace:AI · Non-profit · {SITE.city}</p>
+      <p>No cookies, no analytics, no trackers. Fonts served from this domain.</p>
+    </div>
+  </div>
+</footer>

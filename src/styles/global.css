@@ -1,0 +1,281 @@
+@import 'tailwindcss';
+
+/* Self-hosted: no Google Fonts request, no third-party tracking. */
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/ibm-plex-sans';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+/*
+  Design language: "terminal editorial".
+  The brand already writes itself in punctuation: Embrace:AI, and every event
+  is titled "Embrace:AI // 2026.03". So the site is built from that: monospace
+  slashes as structure, hairline rules as a ledger, and the logo's
+  navy → blue → violet gradient spent on almost nothing so it still lands.
+*/
+@theme {
+  --color-ink: #06090f;
+  --color-ink-raised: #0b111d;
+  --color-ink-panel: #0e1526;
+  --color-navy: #1b2a4a;
+  --color-blue: #5b8def;
+  --color-indigo: #403ccf;
+  --color-violet: #a855f7;
+
+  --color-bone: #e9edf6;
+  --color-muted: #939db4;
+  --color-faint: #5f6b83;
+  --color-rule: rgba(233, 237, 246, 0.1);
+  --color-rule-strong: rgba(233, 237, 246, 0.22);
+
+  --font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', ui-sans-serif, sans-serif;
+  --font-sans: 'IBM Plex Sans Variable', 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --gutter: clamp(1.25rem, 5vw, 5rem);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-violet);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* Page shell ------------------------------------------------------------ */
+  .shell {
+    width: 100%;
+    max-width: 84rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* The atmosphere: hairline grid + two soft brand glows + grain.
+     All decorative, all pointer-events:none, all zero JS. */
+  .atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .atmosphere::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(233, 237, 246, 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(233, 237, 246, 0.035) 1px, transparent 1px);
+    background-size: 5.5rem 5.5rem;
+    mask-image: radial-gradient(ellipse 100% 60% at 50% 0%, #000 20%, transparent 78%);
+  }
+
+  .atmosphere::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(38rem 26rem at 12% -8%, color-mix(in oklab, var(--color-indigo) 34%, transparent), transparent 70%),
+      radial-gradient(32rem 24rem at 92% 6%, color-mix(in oklab, var(--color-violet) 22%, transparent), transparent 68%);
+  }
+
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.16;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+
+  /* Type ------------------------------------------------------------------ */
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-faint);
+  }
+
+  /* The one flourish, reused everywhere the brand's colon/slash appears. */
+  .gradient-text {
+    background: linear-gradient(100deg, var(--color-blue) 8%, var(--color-violet) 92%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .rule {
+    border-top: 1px solid var(--color-rule);
+  }
+
+  /* Surfaces -------------------------------------------------------------- */
+  .panel {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
+    border: 1px solid var(--color-rule);
+    border-radius: 0.25rem;
+  }
+
+  .panel-hover {
+    transition:
+      border-color 0.35s var(--ease-out-quint),
+      background-color 0.35s var(--ease-out-quint),
+      transform 0.35s var(--ease-out-quint);
+  }
+
+  .panel-hover:hover {
+    border-color: var(--color-rule-strong);
+    background-color: rgba(91, 141, 239, 0.05);
+  }
+
+  /* Buttons --------------------------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.8rem 1.35rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    transition:
+      transform 0.3s var(--ease-out-quint),
+      box-shadow 0.3s var(--ease-out-quint),
+      border-color 0.3s var(--ease-out-quint),
+      background-color 0.3s var(--ease-out-quint);
+  }
+
+  .btn-primary {
+    color: #fff;
+    background: linear-gradient(100deg, var(--color-indigo), var(--color-violet));
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09) inset;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.14) inset,
+      0 0.9rem 2.4rem -0.8rem color-mix(in oklab, var(--color-violet) 75%, transparent);
+  }
+
+  .btn-ghost {
+    color: var(--color-bone);
+    border: 1px solid var(--color-rule-strong);
+  }
+
+  .btn-ghost:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-blue);
+    background-color: rgba(91, 141, 239, 0.09);
+  }
+
+  /* Ledger rows (past talks) --------------------------------------------- */
+  .ledger-row {
+    display: grid;
+    gap: 0.35rem 1.5rem;
+    align-items: baseline;
+    padding: 1.15rem 0.75rem;
+    border-top: 1px solid var(--color-rule);
+    transition: background-color 0.3s var(--ease-out-quint);
+  }
+
+  .ledger-row:hover {
+    background-color: rgba(91, 141, 239, 0.06);
+  }
+
+  @media (min-width: 48rem) {
+    .ledger-row {
+      grid-template-columns: 8.5rem 1fr auto;
+    }
+  }
+}
+
+@layer utilities {
+  /* Entrance: staggered on load, scroll-driven further down the page.
+     Scroll-driven animations degrade to "already visible" where unsupported. */
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(1.35rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .rise {
+    animation: rise 0.9s var(--ease-out-quint) backwards;
+  }
+
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 26%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    .rise,
+    .reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+}

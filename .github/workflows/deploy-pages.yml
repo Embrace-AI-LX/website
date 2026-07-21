@@ -1,0 +1,82 @@
+# Publish to GitHub Pages: free, HTTPS, no account or credentials needed.
+#
+# This one is ENABLED, because it needs no secrets and gives the repo a live
+# URL immediately. To turn it on:
+#   Settings -> Pages -> Build and deployment -> Source: "GitHub Actions"
+# Then push. The URL will be https://<org>.github.io/<repo>/
+#
+# To use a custom domain later: Settings -> Pages -> Custom domain, and drop
+# the `BASE_PATH` line below so the site builds at the domain root.
+#
+# The daily cron is what makes new Meetup events appear without a commit:
+# the build re-fetches the iCal feed each run.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * *' # 06:00 UTC daily, picks up new Meetup events
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: write # so the auto-archived past-events.json can be committed back
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        env:
+          # Project pages are served from https://embrace-ai-lx.github.io/website/,
+          # so the build needs the subpath. Hardcoded lowercase on purpose:
+          # github.repository_owner is "Embrace-AI-LX" and Pages URLs are lowercase.
+          # Delete BOTH lines once a custom domain is set. The site then rebuilds
+          # at the domain root.
+          SITE_URL: https://embrace-ai-lx.github.io
+          BASE_PATH: /${{ github.event.repository.name }}/
+        run: npm run build
+
+      # An event that just moved into the past is archived by the build; persist it.
+      - name: Commit archived events
+        run: |
+          if ! git diff --quiet src/data/past-events.json; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/data/past-events.json
+            git commit -m "chore: archive past meetup events [skip ci]"
+            git push
+          fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

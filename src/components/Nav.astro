@@ -1,0 +1,37 @@
+---
+import { Image } from 'astro:assets';
+import mark from '../assets/embrace-ai-mark.png';
+import { NAV, LINKS } from '../data/site';
+---
+
+<header
+  class="sticky top-0 z-40 border-b border-rule bg-ink/72 backdrop-blur-xl supports-[backdrop-filter]:bg-ink/60"
+>
+  <nav class="shell flex h-[4.5rem] items-center justify-between gap-6" aria-label="Main">
+    <a href="#top" class="flex shrink-0 items-center gap-2.5" aria-label="Embrace:AI, home">
+      <Image src={mark} alt="" width={72} height={59} class="h-8 w-auto object-contain" loading="eager" />
+      <span class="font-display text-lg font-semibold tracking-tight">
+        Embrace<span class="gradient-text">:AI</span>
+      </span>
+    </a>
+
+    <ul class="hidden items-center gap-8 lg:flex">
+      {
+        NAV.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="font-mono text-[0.8125rem] text-muted transition-colors hover:text-bone"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <a href={LINKS.meetup} target="_blank" rel="noopener" class="btn btn-primary !px-4 !py-2 text-[0.75rem]">
+      Join on Meetup
+    </a>
+  </nav>
+</header>

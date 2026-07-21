@@ -1,0 +1,74 @@
+---
+import { LINKS, STATS, SITE } from '../data/site';
+import { pastEvents } from '../lib/events';
+import Icon from './Icon.astro';
+
+const stats = STATS.map((stat) =>
+  'from' in stat && stat.from === 'meetupCount'
+    ? { value: String(pastEvents.length), label: stat.label }
+    : { value: (stat as { value: string }).value, label: stat.label },
+);
+---
+
+<section id="top" class="relative overflow-hidden pt-20 pb-16 md:pt-28 md:pb-24">
+  <div class="shell">
+    <p class="label rise flex flex-wrap items-center gap-x-3 gap-y-2" style="animation-delay:60ms">
+      <span class="text-blue">//</span>
+      <span>{SITE.city}</span>
+      <span class="text-faint/50">·</span>
+      <span>monthly since 2025</span>
+      <span class="text-faint/50">·</span>
+      <span>non-profit</span>
+    </p>
+
+    <h1
+      class="rise mt-7 max-w-[18ch] text-[clamp(2.9rem,8.2vw,6.25rem)] leading-[0.94] font-semibold"
+      style="animation-delay:140ms"
+    >
+      Lisbon's expert<br />
+      <span class="gradient-text">AI community</span>.
+    </h1>
+
+    <p
+      class="rise mt-8 max-w-2xl text-[clamp(1.05rem,1.9vw,1.3rem)] leading-relaxed text-muted"
+      style="animation-delay:230ms"
+    >
+      Free, in-person meetups where practitioners go deep on AI engineering, strategy, governance and
+      design. Expert-led and community-run.{' '}
+      <span class="text-bone">No product pitches, no hype, no AI for tourists.</span>
+    </p>
+
+    <div class="rise mt-11 flex flex-wrap items-center gap-3" style="animation-delay:320ms">
+      <a href={LINKS.meetup} target="_blank" rel="noopener" class="btn btn-primary">
+        Join the community
+        <Icon name="arrow" class="h-4 w-4" />
+      </a>
+      <a href={LINKS.linkedin} target="_blank" rel="noopener" class="btn btn-ghost">
+        <Icon name="linkedin" class="h-4 w-4" />
+        Follow on LinkedIn
+      </a>
+    </div>
+
+    <!-- Ledger of proof: mono numerals, hairline dividers. -->
+    <dl
+      class="rise mt-16 grid grid-cols-2 border-t border-rule md:mt-24 md:grid-cols-4"
+      style="animation-delay:420ms"
+    >
+      {
+        stats.map((stat, i) => (
+          <div
+            class:list={[
+              'border-b border-rule px-1 py-6 md:border-b-0 md:px-0 md:py-8',
+              i > 0 && 'md:border-l md:border-l-rule md:pl-7',
+            ]}
+          >
+            <dd class="font-display text-[clamp(1.9rem,4.4vw,2.9rem)] leading-none font-semibold">
+              {stat.value}
+            </dd>
+            <dt class="label mt-2.5">{stat.label}</dt>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

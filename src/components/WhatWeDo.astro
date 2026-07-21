@@ -1,0 +1,40 @@
+---
+import { PILLARS } from '../data/site';
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+---
+
+<section id="what-we-do" class="shell scroll-mt-24 py-20 md:py-28">
+  <SectionHead
+    index="01"
+    label="What we do"
+    title="Running Lisbon's expert AI community."
+    lede="The meetups run today. The rest is what we're building as we formalise into a non-profit. 100% of anything we raise goes back into the community."
+  />
+
+  <div class="mt-14 grid gap-px overflow-hidden rounded border border-rule bg-rule sm:grid-cols-2 lg:grid-cols-4">
+    {
+      PILLARS.map((pillar) => (
+        <article class="panel-hover reveal group relative bg-ink-raised p-7 lg:p-8">
+          <div class="flex items-start justify-between gap-3">
+            <span class="text-blue transition-transform duration-500 group-hover:-translate-y-0.5">
+              <Icon name={pillar.icon as any} class="h-6 w-6" />
+            </span>
+            {pillar.status === 'soon' ? (
+              <span class="label rounded-full border border-rule px-2.5 py-1 text-[0.5625rem] text-faint">
+                Soon
+              </span>
+            ) : (
+              <span class="label inline-flex items-center gap-1.5 rounded-full border border-blue/30 bg-blue/10 px-2.5 py-1 text-[0.5625rem] text-blue">
+                <span class="h-1.5 w-1.5 rounded-full bg-blue" />
+                Live
+              </span>
+            )}
+          </div>
+          <h3 class="mt-7 text-xl leading-snug">{pillar.title}</h3>
+          <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted">{pillar.body}</p>
+        </article>
+      ))
+    }
+  </div>
+</section>

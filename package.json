@@ -1,0 +1,30 @@
+{
+  "name": "embrace-ai-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Landing page for Embrace:AI, Lisbon's expert AI community",
+  "scripts": {
+    "dev": "astro dev",
+    "sync": "node scripts/sync-events.mjs",
+    "prebuild": "node scripts/sync-events.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "images": "node scripts/make-images.mjs",
+    "predev": "node scripts/sync-events.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/ibm-plex-sans": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.1.3",
+    "sharp": "^0.35.3",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "node-ical": "^0.27.0"
+  }
+}

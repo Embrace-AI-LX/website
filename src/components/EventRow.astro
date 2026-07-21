@@ -1,0 +1,25 @@
+---
+import { cleanTitle, formatShortDate, type EmbraceEvent } from '../lib/events';
+import Icon from './Icon.astro';
+
+interface Props {
+  event: EmbraceEvent;
+}
+const { event } = Astro.props;
+---
+
+<a href={event.url} target="_blank" rel="noopener" class="ledger-row group">
+  <span class="font-mono text-[0.8125rem] whitespace-nowrap text-faint">
+    {formatShortDate(event.start)}
+  </span>
+  <span class="text-[1.0625rem] leading-snug transition-colors group-hover:text-blue">
+    {cleanTitle(event.title)}
+  </span>
+  <span class="flex items-center gap-3 font-mono text-[0.75rem] text-faint">
+    {event.venue && <span class="whitespace-nowrap">@ {event.venue}</span>}
+    <Icon
+      name="arrowUpRight"
+      class="h-4 w-4 shrink-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+    />
+  </span>
+</a>

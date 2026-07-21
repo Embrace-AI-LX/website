@@ -1,0 +1,48 @@
+---
+import { Image } from 'astro:assets';
+import roomPacked from '../assets/photos/room-packed.jpg';
+import talkEvaluatingLlms from '../assets/photos/talk-evaluating-llms.jpg';
+import talkRedTeaming from '../assets/photos/talk-red-teaming.jpg';
+import talkAihubStage from '../assets/photos/talk-aihub-stage.jpg';
+import roomWide from '../assets/photos/room-wide.jpg';
+
+// Deliberately uneven spans, so it doesn't read as a four-square grid.
+// Explicit aspect ratios so the grid holds its shape before the images decode.
+const shots = [
+  { src: roomPacked, alt: 'A full room of attendees watching a talk at an Embrace:AI meetup in Lisbon', span: 'md:col-span-7', ratio: 'aspect-[4/3] md:aspect-[7/5]' },
+  { src: talkEvaluatingLlms, alt: 'A speaker presenting a framework for evaluating LLMs', span: 'md:col-span-5', ratio: 'aspect-[4/3] md:aspect-[7/5]' },
+  { src: talkRedTeaming, alt: 'A speaker introducing a talk on red-teaming generative AI applications', span: 'md:col-span-5', ratio: 'aspect-[4/3] md:aspect-[7/5]' },
+  { src: talkAihubStage, alt: 'A speaker on stage at the AI Hub venue in Lisbon', span: 'md:col-span-7', ratio: 'aspect-[4/3] md:aspect-[7/5]' },
+  { src: roomWide, alt: 'Wide view of an Embrace:AI meetup venue with the audience seated', span: 'md:col-span-12', ratio: 'aspect-[4/3] md:aspect-[16/7]' },
+];
+---
+
+<section class="shell pb-20 md:pb-28" aria-label="Photos from past meetups">
+  <div class="grid gap-3 md:grid-cols-12">
+    {
+      shots.map((shot) => (
+        <figure
+          class:list={[
+            'reveal group relative overflow-hidden rounded border border-rule bg-ink-panel',
+            shot.span,
+            shot.ratio,
+          ]}
+        >
+          <Image
+            src={shot.src}
+            alt={shot.alt}
+            widths={[480, 900, 1400]}
+            sizes="(min-width: 64rem) 50vw, 100vw"
+            loading="lazy"
+            class="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+          />
+          {/* Tints the photos into the palette instead of leaving raw phone snaps. */}
+          <div
+            class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/25 to-transparent opacity-70 mix-blend-multiply"
+            aria-hidden="true"
+          />
+        </figure>
+      ))
+    }
+  </div>
+</section>

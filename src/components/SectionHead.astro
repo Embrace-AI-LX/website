@@ -1,0 +1,19 @@
+---
+interface Props {
+  index: string;
+  label: string;
+  title: string;
+  lede?: string;
+}
+const { index, label, title, lede } = Astro.props;
+---
+
+<header class="reveal">
+  <p class="label flex items-center gap-3">
+    <span class="text-blue">{index}</span>
+    <span class="h-px w-8 bg-rule-strong"></span>
+    <span>{label}</span>
+  </p>
+  <h2 class="mt-5 max-w-3xl text-[clamp(1.9rem,4.4vw,3.1rem)] leading-[1.06]">{title}</h2>
+  {lede && <p class="mt-5 max-w-2xl text-[1.0625rem] leading-relaxed text-muted">{lede}</p>}
+</header>

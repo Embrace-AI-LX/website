@@ -1,0 +1,83 @@
+---
+import '../styles/global.css';
+import { SITE, LINKS } from '../data/site';
+import { nextEvent, cleanTitle } from '../lib/events';
+
+// BASE_URL keeps files in public/ resolving correctly when the site is served
+// from a subpath (e.g. a GitHub Pages project URL) rather than a domain root.
+const base = import.meta.env.BASE_URL;
+const asset = (path: string) => `${base.replace(/\/$/, '')}/${path}`;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
+const ogImage = new URL(asset('og.png'), Astro.site ?? SITE.url).href;
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE.name,
+  url: SITE.url,
+  description: SITE.description,
+  email: LINKS.email.replace('mailto:', ''),
+  address: { '@type': 'PostalAddress', addressLocality: 'Lisbon', addressCountry: 'PT' },
+  sameAs: [LINKS.meetup, LINKS.linkedin, LINKS.youtube],
+};
+
+// Only emitted when a real event is in the feed, never a placeholder Event.
+const eventSchema = nextEvent && {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: cleanTitle(nextEvent.title),
+  startDate: nextEvent.start,
+  ...(nextEvent.end ? { endDate: nextEvent.end } : {}),
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  eventStatus: 'https://schema.org/EventScheduled',
+  location: { '@type': 'Place', name: 'Lisbon, Portugal', address: 'Lisbon, Portugal' },
+  organizer: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+  url: nextEvent.url,
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'EUR',
+    availability: 'https://schema.org/InStock',
+    url: nextEvent.url,
+  },
+};
+---
+
+<!doctype html>
+<html lang={SITE.locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{SITE.name} · {SITE.tagline}</title>
+    <meta name="description" content={SITE.description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#06090f" />
+    <link rel="icon" href={asset('favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={asset('apple-touch-icon.png')} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={`${SITE.name} · ${SITE.tagline}`} />
+    <meta property="og:description" content={SITE.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="en_GB" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organization)} is:inline />
+    {eventSchema && <script type="application/ld+json" set:html={JSON.stringify(eventSchema)} is:inline />}
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <a
+      href="#next"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded focus:bg-ink-panel focus:px-4 focus:py-2"
+      >Skip to content</a
+    >
+    <div class="relative z-[2]">
+      <slot />
+    </div>
+  </body>
+</html>

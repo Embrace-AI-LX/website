@@ -1,0 +1,54 @@
+---
+import { pastEvents } from '../lib/events';
+import { LINKS } from '../data/site';
+import SectionHead from './SectionHead.astro';
+import EventRow from './EventRow.astro';
+import Icon from './Icon.astro';
+
+const VISIBLE = 6;
+const recent = pastEvents.slice(0, VISIBLE);
+const older = pastEvents.slice(VISIBLE);
+---
+
+<section id="talks" class="shell scroll-mt-24 py-20 md:py-28">
+  <SectionHead
+    index="03"
+    label="Past talks"
+    title={`${pastEvents.length} meetups and counting.`}
+    lede="Hosted by companies across Lisbon, from Cloudflare to Devoteam. This list keeps itself up to date: events move here automatically once they've happened."
+  />
+
+  <div class="mt-14 border-b border-rule">
+    {recent.map((event) => <EventRow event={event} />)}
+
+    {
+      older.length > 0 && (
+        /* <details> keeps "load more" working with zero JavaScript. */
+        <details class="group/more">
+          <summary
+            class="flex cursor-pointer list-none items-center justify-center gap-2.5 border-t border-rule py-5 font-mono text-[0.8125rem] text-muted transition-colors hover:bg-blue/5 hover:text-bone [&::-webkit-details-marker]:hidden"
+          >
+            <Icon
+              name="arrow"
+              class="h-4 w-4 rotate-90 transition-transform duration-300 group-open/more:-rotate-90"
+            />
+            <span class="group-open/more:hidden">Show {older.length} earlier meetups</span>
+            <span class="hidden group-open/more:inline">Show fewer</span>
+          </summary>
+          {older.map((event) => (
+            <EventRow event={event} />
+          ))}
+        </details>
+      )
+    }
+  </div>
+
+  <p class="mt-8 font-mono text-[0.8125rem] text-faint">
+    <span class="text-blue">//</span> want to speak?{' '}
+    <a
+      href={LINKS.emailSpeak}
+      class="text-muted underline decoration-rule-strong underline-offset-4 transition-colors hover:text-bone"
+      >Pitch us a talk</a
+    >. 20 minutes, no product pitches.
+  </p>
+</section>

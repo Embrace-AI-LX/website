@@ -1,0 +1,66 @@
+---
+import { HOSTS } from '../data/hosts';
+import { LINKS } from '../data/site';
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+
+// Logos are optional: drop a file in src/assets/hosts/ and set `logo` in
+// hosts.ts to upgrade a wordmark card into a real logo.
+const logos = import.meta.glob<{ default: ImageMetadata }>('../assets/hosts/*.{png,jpg,jpeg,svg,webp}', {
+  eager: true,
+});
+const resolveLogo = (file?: string) =>
+  file ? logos[`../assets/hosts/${file}`]?.default : undefined;
+---
+
+<section id="hosts" class="scroll-mt-24 border-y border-rule bg-ink-raised/60 py-20 md:py-28">
+  <div class="shell">
+    <SectionHead
+      index="04"
+      label="Venues & hosts"
+      title="They hosted us."
+      lede="Every meetup happens at a company's office, with our host covering the room and the food. It costs them a venue and an evening; it gets them a room full of AI practitioners."
+    />
+
+    <ul class="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded border border-rule bg-rule sm:grid-cols-3 lg:grid-cols-5">
+      {
+        HOSTS.map((host) => {
+          const logo = resolveLogo(host.logo);
+          const Tag = host.url ? 'a' : 'div';
+          return (
+            <li>
+              <Tag
+                {...(host.url ? { href: host.url, target: '_blank', rel: 'noopener' } : {})}
+                class="panel-hover flex h-24 items-center justify-center bg-ink-raised px-4 text-center md:h-28"
+              >
+                {logo ? (
+                  <img
+                    src={logo.src}
+                    alt={host.name}
+                    loading="lazy"
+                    class="max-h-9 w-auto opacity-70 transition-opacity duration-300 hover:opacity-100"
+                  />
+                ) : (
+                  <span class="font-display text-[0.9375rem] tracking-tight text-muted transition-colors duration-300 md:text-base">
+                    {host.name}
+                  </span>
+                )}
+              </Tag>
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
+      <a href={LINKS.emailHost} class="btn btn-ghost">
+        <Icon name="pin" class="h-4 w-4" />
+        Host a meetup
+      </a>
+      <a href={LINKS.emailPartner} class="btn btn-ghost">
+        <Icon name="mail" class="h-4 w-4" />
+        Partner with us
+      </a>
+    </div>
+  </div>
+</section>
