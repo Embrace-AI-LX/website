@@ -6,7 +6,9 @@
 #   FTP_SERVER     e.g. ftp.embrace-ai.org
 #   FTP_USERNAME
 #   FTP_PASSWORD
-#   FTP_DIR        remote path, usually `public_html/` (must end with a slash)
+#
+# No FTP_DIR needed: Hostinger FTP accounts log in directly inside public_html,
+# which the action treats as the web root by default.
 #
 # The daily cron is what makes new Meetup events appear without a commit:
 # the build re-fetches the iCal feed each run.
@@ -58,6 +60,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_DIR }}
+          # No server-dir: this FTP account logs in directly inside public_html,
+          # so the action default (./) is already the web root. Setting a
+          # public_html/ dir would nest into public_html/public_html/.
           local-dir: ./dist/
           dangerous-clean-slate: false
